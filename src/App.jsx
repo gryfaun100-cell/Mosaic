@@ -236,13 +236,18 @@ function App() {
           </div>
         </div>
         <nav className="header-nav">
-          <button 
-            className="theme-toggle-btn" 
-            onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
-            title="Toggle Light/Dark Mode"
-          >
-            {theme === 'dark' ? '☀️' : '🌙'}
-          </button>
+          <div className="theme-toggle-wrapper">
+            <span className="theme-label">Dark</span>
+            <label className="theme-switch" title="Toggle Light/Dark Mode">
+              <input 
+                type="checkbox" 
+                checked={theme === 'light'} 
+                onChange={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')} 
+              />
+              <span className="slider"></span>
+            </label>
+            <span className="theme-label">Light</span>
+          </div>
           <a href="#how-it-works" className="nav-link">How it works</a>
         </nav>
       </header>
@@ -433,8 +438,8 @@ function App() {
         </div>
       )}
 
-      {/* Result Canvas */}
-      <section className={`result-section ${isGenerated || isGenerating ? 'visible' : ''}`}>
+      {/* Result Canvas Container */}
+      <section className="result-section">
         <div className="result-header">
           <h2 className="result-title">Your Typographic Portrait</h2>
           {isGenerated && (
@@ -448,8 +453,18 @@ function App() {
             </button>
           )}
         </div>
-        <div className="canvas-wrapper">
-          <canvas ref={canvasRef} className="result-canvas" />
+        <div className={`canvas-wrapper ${!isGenerated && !isGenerating ? 'empty' : ''}`}>
+          {!isGenerated && !isGenerating && (
+            <div className="empty-state">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                <circle cx="8.5" cy="8.5" r="1.5" />
+                <polyline points="21 15 16 10 5 21" />
+              </svg>
+              <p>Your generated mosaic will appear here.</p>
+            </div>
+          )}
+          <canvas ref={canvasRef} className="result-canvas" style={{ display: (isGenerated || isGenerating) ? 'block' : 'none' }} />
           {isGenerating && (
             <div className="canvas-overlay">
               <div className="generating-pulse">Rendering mosaic…</div>
