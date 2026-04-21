@@ -1,0 +1,22 @@
+/* index.css – global reset, defer all styling to App.css */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #0a0a0f;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0f; }
+::-webkit-scrollbar-thumb { background: #2a2a3a; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #aa3bff; }
