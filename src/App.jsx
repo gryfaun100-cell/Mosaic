@@ -184,11 +184,10 @@ function App() {
           fillColor = `rgba(${nr},${ng},${nb},${opacity.toFixed(2)})`
         }
 
-          const currentToken = tokens[tokenIndex % tokens.length]
-          tokenIndex++
+        const currentToken = tokens[tokenIndex % tokens.length]
+        tokenIndex++
 
-          wordsToPlace.push({ x, y, fontSize: wordFontSize, rotation, fillColor, text: currentToken })
-        }
+        wordsToPlace.push({ x, y, fontSize: wordFontSize, rotation, fillColor, text: currentToken })
       }
       row++
     }
