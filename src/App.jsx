@@ -4,6 +4,7 @@ import './App.css'
 const PREVIEW_CANVAS_SIZE = 800
 
 function App() {
+  const [theme, setTheme] = useState('dark')
   const [uploadedImage, setUploadedImage] = useState(null)
   const [imageFile, setImageFile] = useState(null)
   const [word, setWord] = useState('')
@@ -57,10 +58,16 @@ function App() {
     img.src = uploadedImage
     await new Promise(r => { img.onload = r })
 
-    // Determine canvas dimensions maintaining aspect ratio
+    // Determine canvas dimensions maintaining aspect ratio with max dimension bounding
     const aspect = img.width / img.height
-    const canvasW = PREVIEW_CANVAS_SIZE
-    const canvasH = Math.round(PREVIEW_CANVAS_SIZE / aspect)
+    let canvasW, canvasH
+    if (aspect > 1) {
+      canvasW = PREVIEW_CANVAS_SIZE
+      canvasH = Math.round(PREVIEW_CANVAS_SIZE / aspect)
+    } else {
+      canvasH = PREVIEW_CANVAS_SIZE
+      canvasW = Math.round(PREVIEW_CANVAS_SIZE * aspect)
+    }
 
     const canvas = canvasRef.current
     canvas.width = canvasW
@@ -218,7 +225,7 @@ function App() {
   }, [])
 
   return (
-    <div className="app-wrapper">
+    <div className={`app-wrapper ${theme}`}>
       {/* Header */}
       <header className="app-header">
         <div className="logo-mark">
@@ -229,6 +236,13 @@ function App() {
           </div>
         </div>
         <nav className="header-nav">
+          <button 
+            className="theme-toggle-btn" 
+            onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+            title="Toggle Light/Dark Mode"
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
           <a href="#how-it-works" className="nav-link">How it works</a>
         </nav>
       </header>
@@ -243,10 +257,17 @@ function App() {
           Upload a portrait. Choose a word. Get a stunning typographic<br />
           mosaic where every detail is made of text.
         </p>
+        <div className="hero-scroll">
+          <a href="#main-controls" className="scroll-arrow">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+               <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+            </svg>
+          </a>
+        </div>
       </section>
 
       {/* Main Controls */}
-      <main className="main-content">
+      <main id="main-controls" className="main-content">
         {/* Left: Upload */}
         <div className="panel upload-panel">
           <div className="panel-label">01 · UPLOAD</div>
@@ -465,6 +486,8 @@ function App() {
 
       <footer className="app-footer">
         <span>TextMosaic · Typographic Portraits</span>
+        <br />
+        <span className="dev-name">Design & Developer: Robert Hermoso</span>
       </footer>
     </div>
   )
