@@ -115,7 +115,15 @@ function App() {
     // Mapping detailLevel (1-10) to grid density
     const gridStep = Math.max(4, Math.round(40 - detailLevel * 3.2))
 
+    const textToUse = word.trim() || 'A'
+    // Split into words, or if it's a very long string without spaces, chunk it
+    let tokens = textToUse.split(/\s+/)
+    if (tokens.length === 1 && tokens[0].length > 10) {
+      tokens = tokens[0].match(/.{1,6}/g) || [tokens[0]]
+    }
+
     const wordsToPlace = []
+    let tokenIndex = 0
     let row = 0
 
     // Build word placement list
@@ -176,7 +184,11 @@ function App() {
           fillColor = `rgba(${nr},${ng},${nb},${opacity.toFixed(2)})`
         }
 
-        wordsToPlace.push({ x, y, fontSize: wordFontSize, rotation, fillColor })
+          const currentToken = tokens[tokenIndex % tokens.length]
+          tokenIndex++
+
+          wordsToPlace.push({ x, y, fontSize: wordFontSize, rotation, fillColor, text: currentToken })
+        }
       }
       row++
     }
@@ -193,7 +205,9 @@ function App() {
         ctx.rotate((w.rotation * Math.PI) / 180)
         ctx.font = `bold ${w.fontSize}px 'Inter', 'Segoe UI', sans-serif`
         ctx.fillStyle = w.fillColor
-        ctx.fillText(word.trim(), 0, 0)
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'middle'
+        ctx.fillText(w.text, 0, 0)
         ctx.restore()
       }
       setProgress(Math.round(((i + batchSize) / wordsToPlace.length) * 100))
@@ -323,15 +337,16 @@ function App() {
           <div className="controls-card">
 
             <div className="control-group">
-              <label className="control-label" htmlFor="word-input">Your Word</label>
-              <input
+              <label className="control-label" htmlFor="word-input">Your Word / Message</label>
+              <textarea
                 id="word-input"
-                type="text"
                 className="control-input"
-                placeholder="Enter a word..."
+                placeholder="Enter a word or a long sweet message..."
                 value={word}
                 onChange={(e) => setWord(e.target.value)}
-                maxLength={30}
+                maxLength={1000}
+                rows={3}
+                style={{ resize: 'vertical', minHeight: '80px', lineHeight: '1.5' }}
               />
             </div>
 
